@@ -49,6 +49,14 @@ blob_fixups: blob_fixups_user_type = {
         .binary_regex_replace(*GRAPHICBUFFER_ALLOC_DECODER),
     'vendor/lib64/c2.dolby.hevc.sec.dec.so' : blob_fixup()
         .binary_regex_replace(*GRAPHICBUFFER_ALLOC_DECODER),
+    (
+        'vendor/bin/hw/dolbycodec2',
+        'vendor/bin/hw/vendor.dolby.media.c2@1.0-service',
+    ): blob_fixup()
+        # Android 17's ComponentStore is 0x120 bytes, but these services
+        # still allocate the Android 16 size (0x108) and overflow RefBase.
+        # Raise the movz immediate to 0x120.
+        .binary_regex_replace(b'\x00\x21\x80\x52', b'\x00\x24\x80\x52'),
 }  # fmt: skip
 
 module = ExtractUtilsModule(
