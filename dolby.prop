@@ -1,6 +1,15 @@
 # Dolby Audio
 vendor.audio.dolby.control.support=true
 
+# AOSP Spatial audio
+# libswspatializer registers AudioEffect.EFFECT_TYPE_SPATIALIZER
+# (ccd4cf09-a79d-46c2-9aae-06a1698d6c8f), but AudioService keeps
+# SpatializerHelper unsupported unless this gate is set.
+ro.audio.spatializer_enabled=true
+# Keep transaural (speaker) virtualization off by default; binaural for
+# headphones stays on.
+ro.audio.spatializer_transaural_enabled_default=false
+
 # Dolby Display / Vision
 ro.vendor.display.dolbyvision.support=true
 ro.vendor.mi_sf.gallery_p3_dolby_opt=true
