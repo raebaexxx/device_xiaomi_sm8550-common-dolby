@@ -1,17 +1,18 @@
 # Dolby Audio
 vendor.audio.dolby.control.support=true
 
-# AOSP Spatial audio
-# libswspatializer registers AudioEffect.EFFECT_TYPE_SPATIALIZER
-# (ccd4cf09-a79d-46c2-9aae-06a1698d6c8f), but AudioService keeps
-# SpatializerHelper unsupported unless this gate is set.
-ro.audio.spatializer_enabled=true
-# Media is mostly stereo; without this the spatializer is only offered for
-# multichannel content and the Settings toggle never appears.
-ro.audio.stereo_spatialization_enabled=true
-# Keep transaural (speaker) virtualization off by default; binaural for
-# headphones stays on.
-ro.audio.spatializer_transaural_enabled_default=false
+# AOSP Spatial audio is intentionally disabled.
+# The framework spatializer engine that registers here is Xiaomi's
+# mispatializer (libspatializer.so). It builds its renderer from
+# /odm/etc/audio/misoundsa_spk_config.bin, which fuxi does not ship (it is
+# absent from the stock ODM image as well). SpkCompensationConfigParser then
+# fails, MisoundXTC is never constructed (ScapeRenderer+0x100 stays null), and
+# ScapeRenderer::SetDeviceType() calls MisoundXTC::SetEnable() on that null
+# pointer. That happens for every device type, not only for the speaker, so
+# every spatializer attach kills the audio HAL. The stock fuxi audio policy
+# declares no AUDIO_OUTPUT_FLAG_SPATIALIZER profile at all; we match that.
+# Dolby surround/virtualization still comes from the DAP path (dax-default.xml).
+ro.audio.spatializer_enabled=false
 
 # Dolby Display / Vision
 ro.vendor.display.dolbyvision.support=true
